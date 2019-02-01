@@ -56,5 +56,7 @@ body {
   .todo__tarefas-lista li .checked {
     color: #ccc;
     text-decoration: line-through; }
+  .todo__tarefas-lista li.over {
+    border: 1px dashed #ccc; }
 
 /*# sourceMappingURL=style.css.map */

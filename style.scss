@@ -74,8 +74,11 @@ body {
       color: #ccc;
     text-decoration: line-through;
     }
+
+    &.over {
+      border: 1px dashed #ccc;
+    }
   }
 }
-
 
 
