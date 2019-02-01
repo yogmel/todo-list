@@ -25,11 +25,15 @@ $todoForm.addEventListener('submit', (e) => {
     item.appendChild(tarefa);
     item.appendChild(removeTarefa);
     
+    // insert event listeners for drag and drop
+    item.addEventListener('dragstart', handleDragStart, false);
+    item.addEventListener('dragenter', handleDragEnter, false);
+    item.addEventListener('dragover', handleDragOver, false);
+    item.addEventListener('dragleave', handleDragLeave, false);
+    item.addEventListener('drop', handleDrop, false);
+    item.addEventListener('dragend', handleDragEnd, false);
+    
     $todoList.appendChild(item);
-
-    // item.setAttribute('ondragstart', 'dragStartHandler(e)');
-    // item.setAttribute('ondragover', 'dragOverHandler(e)');
-    // item.setAttribute('ondrop', 'dragSDropHandler(e)');
     
     $todoItem = document.querySelectorAll('.todo__lista');
     $todoInput.value = '';
@@ -71,34 +75,55 @@ $todoRemoverTodos.addEventListener('click', () => {
   $todoList.innerHTML = '';
 })
 
-$todoList.addEventListener('dragstart', (e) =>{
-  console.log(e.target);
-  dragStartHandler(e);
-})
-
-function dragStartHandler(ev) {
-  ev.dataTransfer.setData("text/plain", ev.target.innerHTML);
- ev.dropEffect = "move";
-}
-
-$todoList.addEventListener('ondragover', (e) =>{
-  console.log('droping area', e.target);
-})
-
-$todoList.addEventListener('drop', (e) => {
-  console.log(e.target);
-})
 
 
 // Drag and Drop event handlers
-function dragStartHandler(e){
-  console.log(e.target);
+let dragSrcEl = null;
+
+function handleDragStart(e) {
+  this.style.opacity = '0.4';
+
+  dragSrcEl = this;
+
+  e.dataTransfer.effectAllowed = 'move';
+  e.dataTransfer.setData('text/html', this.innerHTML);
 }
 
-function dragOverHandler(e){
-  console.log(e.target);
+function handleDragOver(e) {
+  if (e.preventDefault) {
+    e.preventDefault();
+  }
+  e.dataTransfer.dropEffect = 'move'; 
+  return false;
 }
 
-function dragDropHandler(e){
-  console.log(e.target);
+function handleDragEnter(e) {
+  this.classList.add('over');
+}
+
+function handleDragLeave(e) {
+  this.classList.remove('over');
+}
+
+function handleDrop(e) {
+  if (e.stopPropagation) {
+    e.stopPropagation();
+  }
+
+  if (dragSrcEl != this) {
+
+    dragSrcEl.innerHTML = this.innerHTML;
+    this.innerHTML = e.dataTransfer.getData('text/html');
+  }
+
+  return false;
+}
+
+function handleDragEnd(e) {
+  let items = document.querySelectorAll('.todo__lista');
+
+  items.forEach((item) => {
+    item.classList.remove('over');
+    item.style.opacity = '1';
+  });
 }
